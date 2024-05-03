@@ -1,4 +1,5 @@
 import javafx.animation.AnimationTimer;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
 public class Controller {
@@ -8,16 +9,26 @@ public class Controller {
     private final AnimationTimer timer;
     private Enemy enemy;
     private Entity[] heros;
-    private double scrollSpeed = 0.25;
 
     public Controller() {
         view = new View(640, 440);
-        background = new BackgroundModel(scrollSpeed);
+        background = new BackgroundModel();
+
+        // Initialize enemy object
+        enemy = new Enemy(new double[] {0, 0});
+        System.out.println(enemy.dy);
+
+        // If spacebar is pressed, jump
+        view.scene.setOnKeyPressed( (event) -> {
+            if (event.getCode() == KeyCode.SPACE) {
+                enemy.jump();
+            }
+        } );
 
         timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                if( lastTime == 0 ) {
+                if (lastTime == 0) {
                     lastTime = now;
                     return;
                 }
@@ -25,6 +36,8 @@ public class Controller {
                 double deltaTime = (now - lastTime) * 1e-9;
 
                 updateBackground(deltaTime);
+                enemy.updatePosition(deltaTime);
+                view.setEnemySpritePos(enemy.getCoords()[1]);
 
                 lastTime = now;
             }
@@ -40,7 +53,7 @@ public class Controller {
     }
 
     private void updateBackground(double deltaTime) {
-        background.updatePositions();
+        background.updatePositions(deltaTime);
         view.getBackgrounds()[0].setLayoutX(background.getPosition1());
         view.getBackgrounds()[1].setLayoutX(background.getPosition2());
     }

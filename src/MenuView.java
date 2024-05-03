@@ -10,6 +10,7 @@ public class MenuView extends HBox{
         // Left area of menu for pause button
         HBox buttonRegion = new HBox();
         Button pauseButton = new Button("Pause");
+        pauseButton.setFocusTraversable(false);
         buttonRegion.getChildren().add(pauseButton);
         buttonRegion.setAlignment(Pos.CENTER_RIGHT);
 
