@@ -7,19 +7,24 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.scene.image.ImageView;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 public class View extends VBox{
     private final ImageView bg1, bg2;
-    private HBox gameBox;
+    private MenuView menu;
+    private Pane gameBox;
     private Stage stage;
     public Scene scene;
-    private Image heroSprite;
     private ImageView enemyImgView;
-    private ImageView[] heroImgViews;
+    private ArrayList<ImageView> heroImgViews = new ArrayList<ImageView>();
 
     public View(int WIDTH, int HEIGHT) {
-        Pane gameBox = new Pane();
-        MenuView menu = new MenuView();
+        // Initialize game and menu view
+        gameBox = new Pane();
+        menu = new MenuView();
 
+        // Set respective heights
         gameBox.setPrefHeight(400);
         menu.setPrefHeight(40);
 
@@ -41,15 +46,11 @@ public class View extends VBox{
         stage.setScene( scene );
     }
 
-    public void addHero(ImageView hero) {
-
-    }
-
     public Stage getStage() {
         return stage;
     }
 
-    public HBox getGameBox() {
+    public Pane getGameBox() {
         return gameBox;
     }
 
@@ -58,11 +59,24 @@ public class View extends VBox{
     }
 
     // Only update y coordinate because x doesn't change
-    public void setEnemySpritePos(double y) {
+    public void setEnemySpritePos(double x, double y) {
+        enemyImgView.setX(x);
         enemyImgView.setY(y);
     }
 
-    public void drawHeroes() {
+    public void spawnHero(Entity entity) {
+        // Create ImageView object
+        heroImgViews.add(new ImageView(new Image("hero.png")));
+        int lastIndex = heroImgViews.size() - 1;
+        // Add ImageView to gameBox
+        gameBox.getChildren().add(heroImgViews.get(lastIndex));
+    }
 
+    public void setHeroSpritesPos(ArrayList<Entity> heroes) {
+        for (int i = 0; i < heroImgViews.size(); i++) {
+            double[] heroCoords = heroes.get(i).getCoords();
+            heroImgViews.get(i).setX(heroCoords[0]);
+            heroImgViews.get(i).setY(heroCoords[1]);
+        }
     }
 }

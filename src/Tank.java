@@ -1,8 +1,8 @@
 import java.util.Random;
 
 public class Tank extends Entity{
-    public Tank(double[] initialCoords) {
-        super(initialCoords);
+    public Tank(double[] initialCoords, int radius) {
+        super(initialCoords, radius);
 
         // Initialize the radius to a random number between 10 and 45
         // Formula -> rand.nextInt( (max - min) + 1 ) + min
@@ -12,6 +12,7 @@ public class Tank extends Entity{
         damage = 50;
     }
 
+    @Override
     public void updatePosition(double deltaTime) {
         coordinates[0] -= dx * deltaTime;
     }
