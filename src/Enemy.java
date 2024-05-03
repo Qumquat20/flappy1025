@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Enemy extends Entity{
     private int gravity;
     public double dy;
@@ -29,7 +31,18 @@ public class Enemy extends Entity{
         dy = -300;
     }
 
-    public void shoot() {
-        
+    public void shoot(ArrayList<Entity> heroes) {
+        for (Entity hero : heroes) {
+            double heroY = hero.getCenterCoords()[1];
+
+            System.out.println(hero.isDead());
+
+            // If y coordinate of center of enemy is between the center coord of the
+            // hero +- its radius, then it's a hit
+            if (coordinates[1] >= heroY + hero.getRadius()
+                    && coordinates[1] <= heroY - hero.getRadius()) {
+                hero.takeDamage(100);
+            }
+        }
     }
 }

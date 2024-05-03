@@ -25,9 +25,8 @@ public class Entity {
         hp -= dmg;
     }
 
-    // Do dmg damage to given Entity
-    public void doDamage(Entity entity, int dmg) {
-        entity.takeDamage(dmg);
+    public double getHp() {
+        return hp;
     }
 
     public void setDx(int newDx) {

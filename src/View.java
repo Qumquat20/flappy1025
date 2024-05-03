@@ -18,6 +18,7 @@ public class View extends VBox{
     public Scene scene;
     private ImageView enemyImgView;
     private ArrayList<ImageView> heroImgViews = new ArrayList<ImageView>();
+    private ArrayList<ImageView> coinImgViews = new ArrayList<ImageView>();
 
     public View(int WIDTH, int HEIGHT) {
         // Initialize game and menu view
@@ -64,12 +65,18 @@ public class View extends VBox{
         enemyImgView.setY(y);
     }
 
-    public void spawnHero(Entity entity) {
+    public void spawnHero(Entity hero) {
         // Create ImageView object
-        heroImgViews.add(new ImageView(new Image("hero.png")));
+        heroImgViews.add(new ImageView(new Image("hero.png", 2*hero.getRadius(),
+                2*hero.getRadius(), false, false)));
         int lastIndex = heroImgViews.size() - 1;
         // Add ImageView to gameBox
         gameBox.getChildren().add(heroImgViews.get(lastIndex));
+    }
+
+    // Remove hero at index i in hero array
+    public void removeHero(int i) {
+        gameBox.getChildren().remove(heroImgViews.get(i));
     }
 
     public void setHeroSpritesPos(ArrayList<Entity> heroes) {
@@ -77,6 +84,22 @@ public class View extends VBox{
             double[] heroCoords = heroes.get(i).getCoords();
             heroImgViews.get(i).setX(heroCoords[0]);
             heroImgViews.get(i).setY(heroCoords[1]);
+        }
+    }
+
+    public void spawnCoin() {
+        // Create ImageView object
+        coinImgViews.add(new ImageView(new Image("coin.png", 30, 30, false, false)));
+        int lastIndex = coinImgViews.size() - 1;
+        // Add ImageView to gameBox
+        gameBox.getChildren().add(coinImgViews.get(lastIndex));
+    }
+
+    public void setCoinsPos(ArrayList<Coin> coins) {
+        for (int i = 0; i < coinImgViews.size(); i++) {
+            double[] coinCoords = coins.get(i).getCoords();
+            coinImgViews.get(i).setX(coinCoords[0]);
+            coinImgViews.get(i).setY(coinCoords[1]);
         }
     }
 }
