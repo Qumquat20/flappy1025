@@ -74,6 +74,7 @@ public class Controller {
             }
         });
 
+        // When button is pressed, pause the game (wtf so ugly)
         Button pauseButton = (Button) ( (HBox) view.getMenu().getChildren().getFirst() ).getChildren().getFirst();
         pauseButton.setOnAction( (event) -> {
             paused = !paused;
@@ -143,10 +144,12 @@ public class Controller {
                 // Handle collisions between entitites and kill dead heroes
                 handleCollisions();
 
+                // Check if enemy is dead, if so then GAME OVER
                 if (enemy.isDead()) {
                     handleEnemyDead();
                 }
 
+                // Remove dead heroes
                 killHeroes();
 
                 lastTime = now;
@@ -180,16 +183,18 @@ public class Controller {
         }
     }
 
-    // Kill hero if dead (i.e hp=0)
+    // Remove hero from view and model if dead (i.e hp=0)
     private void killHeroes() {
         ArrayList<Integer> deadHeroes = new ArrayList<>();
 
+        // Store indexes of dead heroes
         for (int i=0; i < model.getHeroes().size(); i++) {
             if (model.getHeroes().get(i).isDead()) {
                 deadHeroes.add(i);
             }
         }
 
+        // Use indexes to remove from model and view
         for (int i : deadHeroes) {
             view.removeHero(i);
             model.getHeroes().remove(i);
@@ -209,6 +214,7 @@ public class Controller {
 
                     case Furtif furtif -> {
                         model.addCoins(-10);
+                        view.updateCoinsMenu(model.getCollectedCoins());
                         furtif.takeDamage(100);
                     }
 
@@ -247,6 +253,7 @@ public class Controller {
         }
     }
 
+    // Display GAME OVER when enemy dies
     private void handleEnemyDead() {
         paused = true;
 

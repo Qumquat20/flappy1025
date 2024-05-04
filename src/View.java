@@ -37,7 +37,7 @@ public class View extends VBox{
         bg2 = new ImageView(new Image("bg.png"));
 
         // Create enemy ImageView
-        enemyImgView = new ImageView(new Image("enemy.png", 60, 60, false, false));
+        enemyImgView = new ImageView(new Image("enemy2.jpeg", 60, 60, false, false));
 
         gameBox.getChildren().addAll(bg1, bg2, enemyImgView);
 
@@ -83,8 +83,8 @@ public class View extends VBox{
     }
 
     public void spawnHero(Entity hero) {
-        // Create ImageView object
-        heroImgViews.add(new ImageView(new Image("hero.png", 2*hero.getRadius(),
+        // Create ImageView object with width, length = diameter of hitbox sphere
+        heroImgViews.add(new ImageView(new Image("hero2.jpeg", 2*hero.getRadius(),
                 2*hero.getRadius(), false, false)));
         int lastIndex = heroImgViews.size() - 1;
         // Add ImageView to gameBox
