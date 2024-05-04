@@ -24,6 +24,9 @@ public class Enemy extends Entity{
             dy *= -1;
         }
 
+        if (coordinates[1] >= 400) {coordinates[1] -= 10;}
+        if (coordinates[1] <= 0) {coordinates[1] += 10;}
+
         coordinates[1] += dy * deltaTime;
     }
 
@@ -35,12 +38,10 @@ public class Enemy extends Entity{
         for (Entity hero : heroes) {
             double heroY = hero.getCenterCoords()[1];
 
-            System.out.println(hero.isDead());
-
             // If y coordinate of center of enemy is between the center coord of the
             // hero +- its radius, then it's a hit
-            if (coordinates[1] >= heroY + hero.getRadius()
-                    && coordinates[1] <= heroY - hero.getRadius()) {
+            if (getCenterCoords()[1] <= heroY + hero.getRadius()
+                    && getCenterCoords()[1] >= heroY - hero.getRadius()) {
                 hero.takeDamage(100);
             }
         }

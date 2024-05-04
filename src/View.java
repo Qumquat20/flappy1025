@@ -3,12 +3,13 @@ import javafx.scene.control.Separator;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.image.ImageView;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+
+import javafx.scene.shape.Line;
+
 
 public class View extends VBox{
     private final ImageView bg1, bg2;
@@ -77,6 +78,7 @@ public class View extends VBox{
     // Remove hero at index i in hero array
     public void removeHero(int i) {
         gameBox.getChildren().remove(heroImgViews.get(i));
+        heroImgViews.remove(i);
     }
 
     public void setHeroSpritesPos(ArrayList<Entity> heroes) {
@@ -101,5 +103,17 @@ public class View extends VBox{
             coinImgViews.get(i).setX(coinCoords[0]);
             coinImgViews.get(i).setY(coinCoords[1]);
         }
+    }
+
+    public void drawLine(double xStart, double y) {
+        Line line = new Line(xStart, y, 640, y); // Start at (0, 200) and end at (400, 200)
+        line.setStrokeWidth(2); // Set the thickness of the line
+        line.setStroke(Color.HOTPINK);
+
+        gameBox.getChildren().add(line);
+    }
+
+    public void removeLine() {
+        gameBox.getChildren().removeIf(node -> node instanceof Line);
     }
 }

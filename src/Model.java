@@ -3,8 +3,8 @@ import java.util.Random;
 
 public class Model {
     private Enemy enemy;
-    private ArrayList<Entity> heroes = new ArrayList<Entity>();
-    private ArrayList<Coin> coins = new ArrayList<Coin>();
+    private ArrayList<Entity> heroes = new ArrayList<>();
+    private ArrayList<Coin> coins = new ArrayList<>();
     private int collectedCoins;
 
     public Model() {
@@ -24,7 +24,11 @@ public class Model {
     }
 
     public void addCoins(int amount) {
-        collectedCoins += amount;
+        if (collectedCoins + amount < 0) {
+            collectedCoins = 0;
+        } else {
+            collectedCoins += amount;
+        }
     }
 
     public Enemy getEnemy() {
@@ -82,7 +86,7 @@ public class Model {
         double[] otherCenterCoords = other.getCenterCoords();
 
         double yDiff = enemyCenterCoords[1] - otherCenterCoords[1];
-        double xDiff = enemyCenterCoords[0] - otherCenterCoords[1];
+        double xDiff = enemyCenterCoords[0] - otherCenterCoords[0];
 
         double centerDist = Math.sqrt(Math.pow(yDiff, 2) + Math.pow(xDiff, 2));
 

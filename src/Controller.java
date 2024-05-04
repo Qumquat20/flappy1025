@@ -17,7 +17,6 @@ public class Controller {
     private final long coinInterval = 2_000_000_000L;
     private final long spawnInterval = 3_000_000_000L;
     private final long teleportInterval = 500_000_000L;
-    private final long shootCooldown = 1_000_000_000L;
     private boolean canShoot = true;
 
 
@@ -29,16 +28,25 @@ public class Controller {
         Enemy enemy = model.getEnemy();
 
         // If spacebar is pressed, jump
+        // If e is pressed, shoot
         view.scene.setOnKeyPressed( (event) -> {
             if (event.getCode() == KeyCode.SPACE) {
                 enemy.jump();
             } else if (event.getCode() == KeyCode.E && canShoot) {
+                // Shoot and draw bullet/laser/whatever line showing shot
                 enemy.shoot(model.getHeroes());
+                view.drawLine(enemy.getCenterCoords()[0], enemy.getCenterCoords()[1]);
                 canShoot = false;
 
+                // Enact 1 sec cooldown on shooting
                 Timeline cooldown = new Timeline(new KeyFrame(Duration.seconds(1), e -> canShoot = true));
                 cooldown.setCycleCount(1);
                 cooldown.play();
+
+                // Remove bullet/laser/whatever line showing shot
+                Timeline removeLine = new Timeline(new KeyFrame(Duration.millis(250), e -> view.removeLine()));
+                removeLine.setCycleCount(1);
+                removeLine.play();
             }
         });
 
@@ -71,6 +79,7 @@ public class Controller {
                     lastSpawn = now;
                 }
 
+                // Teleport Tank heroes every 0.5 seconds
                 if (now - lastTeleport >= teleportInterval) {
                     for (Entity hero : model.getHeroes()) {
                         if (hero instanceof Tank) {
@@ -82,13 +91,11 @@ public class Controller {
                 }
 
                 // Update hero positions
-                killHeroes();
                 updateHeros(deltaTime);
                 view.setHeroSpritesPos(model.getHeroes());
 
-                // If 2 seconds have elapsed, spawn a new coin
+                // Spawn a new coin every 2 seconds
                 if (now - lastCoin >= coinInterval) {
-                    System.out.println("COIn");
                     model.createCoin();
                     view.spawnCoin();
 
@@ -98,6 +105,10 @@ public class Controller {
                 // Update position of coins
                 updateCoins(deltaTime);
                 view.setCoinsPos(model.getCoinArray());
+
+                // Handle collisions between entitites and kill dead heroes
+                handleCollisions();
+                killHeroes();
 
                 lastTime = now;
             }
@@ -132,9 +143,40 @@ public class Controller {
 
     // Kill hero if dead (i.e hp=0)
     private void killHeroes() {
+        ArrayList<Integer> deadHeroes = new ArrayList<>();
+
         for (int i=0; i < model.getHeroes().size(); i++) {
             if (model.getHeroes().get(i).isDead()) {
-                view.removeHero(i);
+                deadHeroes.add(i);
+            }
+        }
+
+        for (int i : deadHeroes) {
+            view.removeHero(i);
+            model.getHeroes().remove(i);
+        }
+    }
+
+    private void handleCollisions() {
+        // Iterate through heroes, if hero collides with enemy, execute appropriate
+        // action and continue
+        for (Entity hero : model.getHeroes()) {
+            if (Model.collides(model.getEnemy(), hero)) {
+                switch (hero) {
+                    case Tank tank -> {
+                        model.getEnemy().takeDamage(50);
+                        tank.takeDamage(100);
+                    }
+                    case Furtif furtif -> {
+                        model.addCoins(-10);
+                        furtif.takeDamage(100);
+                    }
+                    case CorpsACorps corpsacorps -> {
+                        model.getEnemy().takeDamage(100);
+                        corpsacorps.takeDamage(100);
+                    }
+                    default -> System.out.println("Unexpected value: " + hero);
+                }
             }
         }
     }
