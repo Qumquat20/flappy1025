@@ -6,9 +6,18 @@ public class Model {
     private ArrayList<Entity> heroes = new ArrayList<>();
     private ArrayList<Coin> coins = new ArrayList<>();
     private int collectedCoins;
+    private int dx = 120;
 
     public Model() {
-        enemy = new Enemy(new double[] {75, 300}, 30);
+        enemy = new Enemy(new double[] {75, 300}, 30, dx);
+    }
+
+    public int getDx() {
+        return dx;
+    }
+
+    public void increaseDx(int addDx) {
+        dx += addDx;
     }
 
     public ArrayList<Coin> getCoinArray() {
@@ -57,15 +66,15 @@ public class Model {
 
         switch (heroType) {
             case 0:
-                heroes.add(new CorpsACorps(initialCoords, radius));
+                heroes.add(new CorpsACorps(initialCoords, radius, dx));
                 break;
 
             case 1:
-                heroes.add(new Tank(initialCoords, radius));
+                heroes.add(new Tank(initialCoords, radius, dx));
                 break;
 
             case 2:
-                heroes.add(new Furtif(initialCoords, radius));
+                heroes.add(new Furtif(initialCoords, radius, dx));
                 break;
         }
 
@@ -77,7 +86,7 @@ public class Model {
         int yCord = rand.nextInt(370);
         double[] initialCoords = {640, yCord};
 
-        coins.add(new Coin(initialCoords, 15));
+        coins.add(new Coin(initialCoords, 15, dx));
     }
 
     // Return true if objects collide, false otherwise

@@ -1,11 +1,14 @@
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.scene.text.Text;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Controller {
@@ -18,6 +21,7 @@ public class Controller {
     private final long spawnInterval = 3_000_000_000L;
     private final long teleportInterval = 500_000_000L;
     private boolean canShoot = true;
+    private boolean paused;
 
 
     public Controller() {
@@ -33,8 +37,28 @@ public class Controller {
             if (event.getCode() == KeyCode.SPACE) {
                 enemy.jump();
             } else if (event.getCode() == KeyCode.E && canShoot) {
-                // Shoot and draw bullet/laser/whatever line showing shot
-                enemy.shoot(model.getHeroes());
+                Entity heroHit = enemy.shoot(model.getHeroes());
+
+                // Check type of hero hit to gain the right amount of coins
+                if ( heroHit != null) {
+                    switch (heroHit) {
+                        case Tank tank -> {
+                            model.addCoins(7);
+                        }
+
+                        case Furtif furtif -> {
+                            model.addCoins(8);
+                        }
+
+                        case CorpsACorps corpsacorps -> {
+                            model.addCoins(5);
+                        }
+                        default -> System.out.println("Unexpected value: " + heroHit);
+                    }
+                    view.updateCoinsMenu(model.getCollectedCoins());
+                };
+
+                // Draw bullet/laser/whatever line showing shot
                 view.drawLine(enemy.getCenterCoords()[0], enemy.getCenterCoords()[1]);
                 canShoot = false;
 
@@ -44,15 +68,25 @@ public class Controller {
                 cooldown.play();
 
                 // Remove bullet/laser/whatever line showing shot
-                Timeline removeLine = new Timeline(new KeyFrame(Duration.millis(250), e -> view.removeLine()));
+                Timeline removeLine = new Timeline(new KeyFrame(Duration.millis(150), e -> view.removeLine()));
                 removeLine.setCycleCount(1);
                 removeLine.play();
             }
         });
 
+        Button pauseButton = (Button) ( (HBox) view.getMenu().getChildren().getFirst() ).getChildren().getFirst();
+        pauseButton.setOnAction( (event) -> {
+            paused = !paused;
+        });
+
         timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
+                if (paused) {
+                    lastTime = 0;
+                    return;
+                }
+
                 if (lastTime == 0) {
                     lastTime = now;
                     lastSpawn = now;
@@ -108,6 +142,11 @@ public class Controller {
 
                 // Handle collisions between entitites and kill dead heroes
                 handleCollisions();
+
+                if (enemy.isDead()) {
+                    handleEnemyDead();
+                }
+
                 killHeroes();
 
                 lastTime = now;
@@ -167,17 +206,61 @@ public class Controller {
                         model.getEnemy().takeDamage(50);
                         tank.takeDamage(100);
                     }
+
                     case Furtif furtif -> {
                         model.addCoins(-10);
                         furtif.takeDamage(100);
                     }
+
                     case CorpsACorps corpsacorps -> {
                         model.getEnemy().takeDamage(100);
                         corpsacorps.takeDamage(100);
                     }
                     default -> System.out.println("Unexpected value: " + hero);
                 }
+                System.out.println(model.getEnemy().getHp());
+                view.updateHealthMenu(model.getEnemy().getHp());
             }
         }
+
+        // Iterate through coins, if hero collides with one, remove coin from
+        // screen and add to collectedCoins in model
+        ArrayList<Integer> collidedCoins = new ArrayList<>();
+
+        for (int i=0; i < model.getCoinArray().size(); i++) {
+            if (Model.collides(model.getEnemy(), model.getCoinArray().get(i))) {
+                collidedCoins.add(i);
+
+                model.addCoins(1);
+                model.increaseDx(10);
+                model.getEnemy().increaseGravity(15);
+
+                view.updateCoinsMenu(model.getCollectedCoins());
+
+                background.increaseDx(10);
+
+                view.removeCoin(i);
+                model.getCoinArray().remove(i);
+
+                return;
+            }
+        }
+    }
+
+    private void handleEnemyDead() {
+        paused = true;
+
+        Text gameText = new Text("GAME");
+        Text overText = new Text("OVER");
+
+        gameText.setFont(Font.font("Arial", 100));
+        gameText.setLayoutX(190);
+        gameText.setLayoutY(200);
+
+        overText.setFont(Font.font("Arial", 100));
+        overText.setLayoutX(200);
+        overText.setLayoutY(300);
+
+        view.getGameBox().getChildren().addAll(gameText, overText);
     }
 }

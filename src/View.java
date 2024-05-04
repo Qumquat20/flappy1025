@@ -1,9 +1,11 @@
 import javafx.scene.Scene;
 import javafx.scene.control.Separator;
 import javafx.scene.image.Image;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.image.ImageView;
 import java.util.ArrayList;
@@ -35,7 +37,7 @@ public class View extends VBox{
         bg2 = new ImageView(new Image("bg.png"));
 
         // Create enemy ImageView
-        enemyImgView = new ImageView(new Image("enemy.png"));
+        enemyImgView = new ImageView(new Image("enemy.png", 60, 60, false, false));
 
         gameBox.getChildren().addAll(bg1, bg2, enemyImgView);
 
@@ -48,6 +50,10 @@ public class View extends VBox{
         stage.setScene( scene );
     }
 
+    public MenuView getMenu() {
+        return menu;
+    }
+
     public Stage getStage() {
         return stage;
     }
@@ -58,6 +64,16 @@ public class View extends VBox{
 
     public ImageView[] getBackgrounds() {
         return new ImageView[] {bg1, bg2};
+    }
+
+    public void updateCoinsMenu(int coins) {
+        Text coinLabel = (Text) ( (HBox) menu.getChildren().getLast() ).getChildren().getFirst();
+        coinLabel.setText("Coins: " + coins);  // Just update the text
+    }
+
+    public void updateHealthMenu(double hp) {
+        Text healthLabel = (Text) ( (HBox) menu.getChildren().get(2) ).getChildren().getFirst();
+        healthLabel.setText("Life: " + (int) hp);
     }
 
     // Only update y coordinate because x doesn't change
@@ -95,6 +111,11 @@ public class View extends VBox{
         int lastIndex = coinImgViews.size() - 1;
         // Add ImageView to gameBox
         gameBox.getChildren().add(coinImgViews.get(lastIndex));
+    }
+
+    public void removeCoin(int i) {
+        gameBox.getChildren().remove(coinImgViews.get(i));
+        coinImgViews.remove(i);
     }
 
     public void setCoinsPos(ArrayList<Coin> coins) {

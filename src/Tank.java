@@ -1,8 +1,8 @@
 import java.util.Random;
 
 public class Tank extends Entity{
-    public Tank(double[] initialCoords, int radius) {
-        super(initialCoords, radius);
+    public Tank(double[] initialCoords, int radius, int dx) {
+        super(initialCoords, radius, dx);
 
         // Initialize the radius to a random number between 10 and 45
         // Formula -> rand.nextInt( (max - min) + 1 ) + min

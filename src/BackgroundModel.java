@@ -19,7 +19,7 @@ public class BackgroundModel {
         return position2;
     }
 
-    public void setDx(double newDx) {
-        dx = newDx;
+    public void increaseDx(double addDx) {
+        dx += addDx;
     }
 }

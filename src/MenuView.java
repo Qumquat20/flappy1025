@@ -16,13 +16,13 @@ public class MenuView extends HBox{
 
         // Center area of menu for hp counter
         HBox lifeRegion = new HBox();
-        Text lifeText = new Text("Life: ");
+        Text lifeText = new Text("Life: 100");
         lifeRegion.getChildren().add(lifeText);
         lifeRegion.setAlignment(Pos.CENTER);
 
         // Right area of menu for coin counter
         HBox coinregion = new HBox();
-        Text coinText = new Text("Coins: ");
+        Text coinText = new Text("Coins: 0");
         coinregion.getChildren().add(coinText);
         coinregion.setAlignment(Pos.CENTER_LEFT);
 

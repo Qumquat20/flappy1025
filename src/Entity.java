@@ -3,10 +3,10 @@ public class Entity {
     protected double[] coordinates;
     protected int radius;
 
-    public Entity(double[] initialCoords, int radius) {
+    public Entity(double[] initialCoords, int radius, int dx) {
         coordinates = initialCoords;
         hp = 100;
-        dx = 120;
+        this.dx = dx;
         this.radius = radius;
     }
 
@@ -29,8 +29,8 @@ public class Entity {
         return hp;
     }
 
-    public void setDx(int newDx) {
-        dx = newDx;
+    public void increaseDx(int addDx) {
+        dx += addDx;
     }
 
     public int getRadius() {
@@ -43,6 +43,6 @@ public class Entity {
 
     // Return true if entity is dead, false otherwise
     public boolean isDead() {
-        return hp == 0;
+        return hp <= 0;
     }
 }

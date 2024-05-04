@@ -4,8 +4,8 @@ import java.util.Random;
 public class Furtif extends Entity {
     double initialY;
 
-    public Furtif(double[] initialCoords, int radius) {
-        super(initialCoords, radius);
+    public Furtif(double[] initialCoords, int radius, int dx) {
+        super(initialCoords, radius, dx);
         initialY = initialCoords[1];
 
         // Initialize the radius to a random number between 10 and 45

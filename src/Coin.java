@@ -1,8 +1,6 @@
 public class Coin extends Entity{
-    private int dx = 120;
-
-    public Coin(double[] initalCoords, int radius) {
-        super(initalCoords, radius);
+    public Coin(double[] initalCoords, int radius, int dx) {
+        super(initalCoords, radius, dx);
     }
 
     public void updatePosition(double deltaTime) {
